@@ -13,7 +13,6 @@ To bundle this app, you need:
 - `luajit` 
 - `luajit-lgi-git`
 - `astal-lua`
-- `AstalHyprland` 
 
 ## Installation
 
