@@ -1,4 +1,3 @@
-local Hyprland = astal.require('AstalHyprland')
 local Gtk = astal.require('Gtk')
 local Gdk = astal.require('Gdk')
 
@@ -18,35 +17,44 @@ local function lookup_icon(...)
     end
 end
 
-local function XDPH_WINDOW_SHARING_LIST(address)
+---@class Client
+---@field id string
+---@field class string
+---@field title string
+
+---@return Client[]
+local function XDPH_WINDOW_SHARING_LIST()
     local list = os.getenv('XDPH_WINDOW_SHARING_LIST')
-    if not list then return nil end
+    local tbl = {}
+
+    if not list then return tbl end
 
     for window in string.gmatch(list, '(.-)%[HA>%]') do
         local id, class, title, handle =
             string.match(window, '^(%d+)%[HC>%](.-)%[HT>%](.-)%[HE>%](%d+)$')
 
-        if tonumber(handle) == tonumber(address, 16) then return id end
+        table.insert(tbl, {
+            id = id,
+            class = class,
+            title = title,
+        })
     end
+
+    return tbl
 end
 
----@param args { client: AstalHyprland.Client }
+---@param args Client
 local function ClientRow(args)
-    local c = args.client
-    local id = XDPH_WINDOW_SHARING_LIST(c.address)
-
-    if not id then return end
-
-    local selection_id = string.format('window:%d', id)
+    local selection_id = string.format('window:%d', args.id)
 
     return Widget.ActionRow {
-        title = bind(c, 'initial-class'),
-        subtitle = bind(c, 'title'),
+        title = args.class,
+        subtitle = args.title,
         subtitle_lines = 1,
         activatable = true,
-        on_activated = function() ScreenShareSelection:set(selection_id) end,
+        on_activated = function() ScreenShareSelection:set(args.id) end,
         prefix = Widget.Image {
-            icon_name = lookup_icon(c.initial_class, 'application-x-executable'),
+            icon_name = lookup_icon(args.class, 'application-x-executable'),
             pixel_size = 32,
         },
         suffix = Widget.Image {
@@ -60,35 +68,14 @@ local function ClientRow(args)
 end
 
 return function()
-    local hypr = Hyprland.get_default()
-    ---@type table<string, Gtk.ListBoxRow | Astalified4>
-    local clients = {}
+    local clients = XDPH_WINDOW_SHARING_LIST()
+    local clients_widgets = {}
+
+    for _, value in ipairs(clients) do
+        table.insert(clients_widgets, ClientRow(value))
+    end
 
     return Widget.PreferencesGroup {
-        setup = function(self)
-            local added = function(c)
-                local widget = ClientRow { client = c }
-
-                if widget then
-                    clients[c.address] = widget
-                    self:add(widget)
-                end
-            end
-
-            local removed = function(addr)
-                local w = clients[addr]
-                if w then
-                    self:remove(w)
-                    w:run_dispose()
-                end
-            end
-
-            for _, c in ipairs(hypr.clients) do
-                added(c)
-            end
-
-            self:hook(hypr, 'client-added', function(_, c) added(c) end)
-            self:hook(hypr, 'client-removed', function(_, address) removed(address) end)
-        end,
+        clients_widgets,
     }
 end
