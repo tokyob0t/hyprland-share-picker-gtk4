@@ -1,5 +1,5 @@
 # FIXME: rename
-project('hyprland-share-picker-gtk4', version: '0.0.0')
+project('hyprland-share-picker-gtk4', version: '0.0.1')
 domain = 'ggez.tokyob0t.hyprlandSharePicker'
 resource = '/ggez/tokyob0t/hyprlandSharePicker'
 lua_version = '5.1'
