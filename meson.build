@@ -2,7 +2,6 @@
 project('hyprland-share-picker-gtk4', version: '0.0.1')
 domain = 'ggez.tokyob0t.hyprlandSharePicker'
 resource = '/ggez/tokyob0t/hyprlandSharePicker'
-lua_version = '5.1'
 ignore_requires = 'lgi'
 
 name = meson.project_name()
@@ -31,10 +30,10 @@ foreach d : lua_dirs
   project_paths += d + '/?.lua;' + d + '/?/init.lua;'
 endforeach
 
-lua = find_program('lua' + lua_version)
+luajit = find_program('luajit')
 luarocks = find_program('luarocks')
 
-luarocks_path = run_command(luarocks, '--lua-version=' + lua_version, 'path').stdout()
+luarocks_path = run_command(luarocks, '--lua-version=5.1', 'path').stdout()
 
 lua_path = ''
 
@@ -49,13 +48,13 @@ custom_target(
     input: 'src/init.in.lua',
     output: 'init.in.lua',
     configuration: {
-      'lua': lua.full_path(),
+      'lua': luajit.full_path(),
       'resource': resource,
       'domain': domain,
     },
   ),
   command: [
-    lua,
+    luajit,
     root / 'scripts/lua/bundle.lua',
     '@INPUT@',
     '-o', '@OUTPUT@',
