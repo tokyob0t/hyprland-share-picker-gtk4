@@ -1,0 +1,4 @@
+@luagir
+build/
+dist/
+scripts/lua
