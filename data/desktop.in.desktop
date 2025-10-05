@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Counter
-Comment=A simple GTK counter application
-Type=Application
-Exec=@exe@
-Terminal=false
-Categories=GTK;GNOME;
-Keywords=GNOME;
-Icon=application-x-executable

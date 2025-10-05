@@ -1,9 +1,9 @@
 # FIXME: rename
-project('astal-lua-gtk-template', version: '0.0.0')
-domain = 'xyz.example.luaApplication'
-resource = '/xyz/example/luaApplication'
+project('hyprland-share-picker-gtk4', version: '0.0.0')
+domain = 'ggez.tokyob0t.hyprlandSharePicker'
+resource = '/ggez/tokyob0t/hyprlandSharePicker'
 lua_version = '5.1'
-ignore_requires = 'lgi' # Sets the modules to ignore when bundling, separated by semicolons
+ignore_requires = 'lgi'
 
 name = meson.project_name()
 version = meson.project_version()
@@ -59,8 +59,7 @@ custom_target(
     root / 'scripts/lua/bundle.lua',
     '@INPUT@',
     '-o', '@OUTPUT@',
-    '-i', project_paths + ';' + lua_path, # Use this to include your local installed modules
-    # '-i', project_paths,
+    '-i', project_paths + ';' + lua_path,
     '-g', ignore_requires,
     '--minify',
     '--verbose',
@@ -69,35 +68,5 @@ custom_target(
   output: name,
   install: true,
   install_dir: bindir,
-)
-
-configure_file(
-  input: 'data/desktop.in.desktop',
-  output: domain + '.desktop',
-  configuration: {'exe': bindir / name},
-  install: true,
-  install_dir: datadir / 'applications',
-)
-
-configure_file(
-  input: 'data/gschema.in.xml',
-  output: domain + '.gschema.xml',
-  configuration: {'resource': resource, 'domain': domain},
-  install: true,
-  install_dir: datadir / 'glib-2.0' / 'schemas',
-)
-
-test(
-  'validate-gschema',
-  find_program('glib-compile-schemas'),
-  args: [
-    '--strict',
-    '--dry-run', meson.current_source_dir(),
-  ],
-)
-
-import('gnome').post_install(
-  # gtk_update_icon_cache: true,
-  glib_compile_schemas: true,
-  update_desktop_database: true,
+  install_mode: 'rwxr-xr-x',
 )

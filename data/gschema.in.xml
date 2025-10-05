@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<schemalist>
-    <schema path="@resource@/" id="@domain@">
-        <key name="simple-uint" type='u'>
-            <default>0</default>
-        </key>
-    </schema>
-</schemalist>

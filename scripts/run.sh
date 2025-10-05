@@ -8,4 +8,4 @@ export GBM_BACKEND=nvidia-drm
 export GSK_RENDERER=vulkan
 export GDK_BACKEND=wayland,x11
 
-luajit dist/bin/* "${@}"
+dist/bin/* "${@}"
