@@ -52,7 +52,7 @@ local function ClientRow(args)
         subtitle = args.title,
         subtitle_lines = 1,
         activatable = true,
-        on_activated = function() ScreenShareSelection:set(args.id) end,
+        on_activated = function() ScreenShareSelection:set(selection_id) end,
         prefix = Widget.Image {
             icon_name = lookup_icon(args.class, 'application-x-executable'),
             pixel_size = 32,
